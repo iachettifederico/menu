@@ -1,0 +1,29 @@
+* Xiki Menus
+
+My personal Xiki menus.
+
+Not all of them work, some of them are just tests.
+
+* Welcome
+My customized welcome menu with access to what I use more often.
+
+* Devchat
+My "development environment hacks" for DevChat.tv.
+
+* Music
+A small Xiki music player for Ubuntu (uses =rythmbox-client= to play).
+
+* Browse
+Open a url in your default web browser.
+
+* Sudo
+Execute linux commands with sudo permissions. It's optimized for ubuntu, but you can probably make it work for any *nix OS.
+
+* Apt
+Frontend for =aptitude= on Ubuntu
+
+* Disk
+Show disk usage.
+
+* TRecs
+My development environment for my =TRecs= project. Also has a player item.

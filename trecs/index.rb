@@ -1,0 +1,112 @@
+require "trecs/version"
+require "trecs/player"
+require "trecs/sources/tgz_source"
+
+class XikiScreen
+  attr_reader :line_number
+  attr_reader :indent
+
+  def initialize(line_number, indent)
+    @line_number = line_number
+    @indent = indent
+  end
+  def clear
+    ::Xiki::Move.to_line(line_number)
+    ::Xiki::Move.to_end
+    ::Xiki::Launcher.hide
+  end
+
+  def puts(str)
+    ::Xiki::View.<< "\n"
+    str.each_line do |line|
+      ::Xiki::View.insert("#{indent}  : #{line}")
+    end
+    ::Xiki::View.<< "#{indent}  "
+  end
+end
+
+class XikiDemoScreen
+  attr_reader :line_number
+  attr_reader :indent
+
+  def initialize(line_number, indent)
+    @line_number = line_number
+    @indent = indent
+  end
+  def clear
+    ::Xiki::Move.to_line(line_number)
+    ::Xiki::Move.to_end
+    ::Xiki::Launcher.hide
+  end
+
+  def puts(str)
+    ::Xiki::View.<< "\n"
+    str.each_line do |line|
+      ::Xiki::View.insert("#{indent}  #{line}")
+    end
+    ::Xiki::View.<< "#{indent}  "
+  end
+end
+
+class XikiTicker
+  attr_accessor :player
+  def initialize(*)
+  end
+
+  def start
+    prev_time = 0
+    player.timestamps.each do |time|
+      player.tick(time)
+      ::Xiki::View.pause((time - prev_time)/1000.0)
+      prev_time = time
+    end
+    true
+  end
+  def to_s
+    "<#{self.class}>"
+  end
+  alias :inspect :to_s
+end
+
+class Trecs
+  def self.version
+    [TRecs::VERSION]
+  end
+
+  def self.play(*args)
+    return "@prompt/Type file name" if args.empty?
+    trecs_file = args.join("/")
+
+    line_number = ::Xiki::Line.number
+    indent = ::Xiki::Line.indent
+
+    source = TRecs::TgzSource.new(trecs_file: trecs_file)
+    reader = source.reader(trecs_file: trecs_file)
+
+    player_options = {
+      reader:     reader,
+      ticker:     XikiTicker.new,
+      screen:     XikiDemoScreen.new(line_number, indent),
+      step:       100,
+    }
+
+    player = TRecs::Player.new(player_options)
+    player.play
+
+    nil
+  end
+
+  def self.install
+    out = `rvm all do gem uninstall trecs -a -x && rvm all do gem install trecs `
+    out.each_line.map {|l| "| #{l}"}.join
+  end
+  
+  def self.record(*attrs)
+    "hola >#{@pepe}<"
+  end
+
+  def self.menu_before(*args)
+    @pepe = View.line
+    nil
+  end
+end

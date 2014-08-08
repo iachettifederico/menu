@@ -1,0 +1,18 @@
+> Actions
+- .play/
+- .next/
+- .previous/
+> Voume
+- .up/
+- .down/
+- .mute/
+> Info
+- .playing/
+- .volume/
+- .man/
+> Playlists and opening files
+- .open/
++ .open list/sherlock and chives/
+  : /home/fedex/Music/Sherlock BBC Meets Metal.ogg
+  : /home/fedex/Music/animals_chives.ogg
+- .new playlist/

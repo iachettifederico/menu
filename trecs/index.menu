@@ -1,0 +1,6 @@
++ .play/
++ dev/
+  + @~/code/trecs/
+  + @~/tesis/
++ .version/
++ .install/

@@ -27,3 +27,18 @@ Show disk usage.
 
 * TRecs
 My development environment for my =TRecs= project. Also has a player item.
+
+** Play
+Play a TRecs recording.
+
+** Dev
+Paths to the development directories.
+
+** Version
+Show the current verision of TRecs.
+
+** Install
+Remove and then install the latest version of TRecs on all available Rubies.
+
+** Record
+Record a TRecs (WiP).

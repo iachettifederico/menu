@@ -1,10 +1,12 @@
 > DC
-- .start/
-- .stop/
 - .restart/
+- .stop/
+> Bundle
 - .bundle/
 - .update core/
+- .update auth/
 - .recreate database/
+> Info
 - .urls/
 - .paths/
 > External Tools

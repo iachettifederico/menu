@@ -21,7 +21,7 @@ class Devchat
       app, url = line.split(":", 2)
       app = app.strip
       url = "\n  - @browse/" + url.strip.chomp + "/"
-      "#{app}:#{url}"
+      "#{app}/#{url}"
     }
   end
 
@@ -29,8 +29,12 @@ class Devchat
     run "rvm 2.1.2 do devchat #{apps(args)} -b"
   end
 
-  def self.update_core(*args)
+    def self.update_core(*args)
     run "rvm 2.1.2 do devchat api admin --command='bundle update core_devchat_tv'"
+  end
+  
+  def self.update_auth(*args)
+    run "rvm 2.1.2 do devchat devchat admin sponsorships --command='bundle update auth_devchat_tv'"
   end
 
   def self.recreate_database(*args)

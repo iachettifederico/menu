@@ -19,7 +19,7 @@ class XikiScreen
   def puts(str)
     ::Xiki::View.<< "\n"
     str.each_line do |line|
-      ::Xiki::View.insert("#{indent}  : #{line}")
+      ::Xiki::View.insert("#{indent}  | #{line}")
     end
     ::Xiki::View.<< "#{indent}  "
   end
@@ -33,6 +33,7 @@ class XikiDemoScreen
     @line_number = line_number
     @indent = indent
   end
+  
   def clear
     ::Xiki::Move.to_line(line_number)
     ::Xiki::Move.to_end
@@ -56,8 +57,8 @@ class XikiTicker
   def start
     prev_time = 0
     player.timestamps.each do |time|
-      player.tick(time)
       ::Xiki::View.pause((time - prev_time)/1000.0)
+      player.tick(time)
       prev_time = time
     end
     true
@@ -75,18 +76,18 @@ class Trecs
 
   def self.play(*args)
     return "@prompt/Type file name" if args.empty?
-    trecs_file = args.join("/")
+    trecs_backend = args.join("/")
 
     line_number = ::Xiki::Line.number
     indent = ::Xiki::Line.indent
 
-    source = TRecs::TgzSource.new(trecs_file: trecs_file)
-    reader = source.reader(trecs_file: trecs_file)
+    source = TRecs::TgzSource.new(trecs_backend: trecs_backend)
+    reader = source.build_reader(trecs_backend: trecs_backend)
 
     player_options = {
       reader:     reader,
       ticker:     XikiTicker.new,
-      screen:     XikiDemoScreen.new(line_number, indent),
+      screen:     XikiScreen.new(line_number, indent),
       step:       100,
     }
 
@@ -99,14 +100,5 @@ class Trecs
   def self.install
     out = `rvm all do gem uninstall trecs -a -x && rvm all do gem install trecs `
     out.each_line.map {|l| "| #{l}"}.join
-  end
-  
-  def self.record(*attrs)
-    "hola >#{@pepe}<"
-  end
-
-  def self.menu_before(*args)
-    @pepe = View.line
-    nil
   end
 end

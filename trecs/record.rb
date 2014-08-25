@@ -1,30 +1,70 @@
+require "trecs"
+require "trecs/writers/json_writer"
+require "trecs/recorder"
+require "trecs/recording_strategies/config_strategy"
 class Record
   def self.menu(*args)
-    return example if args.empty?
-    sections = {}
-    r = Tree.siblings.each do |item|
-      title = item[/\A\s*>\s*(\w+)/, 1]
-      if title
-        sections[title] = {}
-      else
-        section = sections.keys.last
-        k, v = item.gsub(/\/\Z/, "").split(": ")
+    return "@prompt/Enter file name" if args.empty?
+    trecs_backend = (args - [Tree.siblings.first]).select {|a|
+      !a.include?(": ") && !a.include?("> ")
+    }.join("/")
+    return example if args.join("/") == trecs_backend
+    strategy = TRecs::ConfigStrategy.new(strategies: strategies, step: 100)
 
-        sections[section][k] = v #  = item
-      end
-    end
-    sections
+    writer = TRecs::JsonWriter.new(trecs_backend: trecs_backend)
+
+    recorder = TRecs::Recorder.new(strategy: strategy, writer: writer)
+    recorder.record
+    "@prompt/Recording ..."
   end
 
   private
+
+  def self.strategies
+    strategies ||= get_strategies
+  end
+
+  def self.get_strategies
+    options_list = {}
+    Tree.siblings.each do |item|
+      title = item[/\A\s*>\s*(.+)/, 1]
+      if title
+        options_list[title] = {}
+      else
+        opts = options_list.keys.last
+        k, v = item.gsub(/\/\Z/, "").split(/\s*:\s/, 2)
+        options_list[opts][k] = v
+      end
+    end
+    strategies = options_list.map { |section, opts|
+      raise "Recording strategy needed" unless opts["strategy"]
+      opts = opts.each_with_object({}) { |opt, h|
+        h[opt.first.to_sym] = opt.last
+      }
+      strategy_file = "trecs/recording_strategies/#{opts[:strategy]}_strategy"
+      require strategy_file
+      strategy_class_name = [
+        "TRecs::",
+        opts[:strategy].split(/[-_\s]/).map(&:capitalize),
+        "Strategy"
+      ].join
+      strategy_class = strategy_class_name.split("::").reduce(Object) { |a, e| a.const_get e }
+      strategy_class.new(opts)
+    }
+    strategies
+  end
+
   def self.example
     <<EOF
 > First TRecs
-- file: /tmp/pepe.trecs
-- step: 50/
+- strategy: incremental
+- message: Welcome to
+- step: 50
 > Second TRecs
-- file: /tmp/toto.trecs
-- step: 5000/
+- strategy: fly_from_right
+- message: TRecs
+- step: 1
+- command: echo "Welcome to" <frame>
 EOF
   end
 end

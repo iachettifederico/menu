@@ -8,7 +8,9 @@ class Record
     trecs_backend = (args - [Tree.siblings.first]).select {|a|
       !a.include?(": ") && !a.include?("> ")
     }.join("/")
+    return "@prompt/Enter file name after the \"record/\" command" if trecs_backend == ""
     return example if args.join("/") == trecs_backend
+   
     strategy = TRecs::ConfigStrategy.new(strategies: strategies, step: 100)
 
     writer = TRecs::JsonWriter.new(trecs_backend: trecs_backend)

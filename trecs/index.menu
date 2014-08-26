@@ -1,7 +1,9 @@
+> User
 + .play/
++ .record/
++ .version/
+> Developer
++ .install/
 + dev/
   + @~/code/trecs/
   + @~/tesis/
-+ .version/
-+ .install/
-+ .record/

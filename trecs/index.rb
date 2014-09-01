@@ -1,3 +1,5 @@
+require "trecs/version"
+
 class Trecs
   def self.version
     [TRecs::VERSION]

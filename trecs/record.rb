@@ -35,6 +35,7 @@ class Record
       else
         opts = options_list.keys.last
         k, v = item.gsub(/\/\Z/, "").split(/\s*:\s/, 2)
+        v.to_s.gsub!(/\\n/, "\n")
         options_list[opts][k] = v
       end
     end
@@ -69,7 +70,7 @@ class Record
 - command: echo "Welcome to" <frame>
 EOF
     if file_name
-      example << "@trecs/play//tmp/hola.trecs/"
+      example << "@trecs/play/#{file_name}/"
     end
     
     example

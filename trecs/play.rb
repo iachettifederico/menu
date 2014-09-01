@@ -1,4 +1,3 @@
-require "trecs/version"
 require "trecs/player"
 require "trecs/sources/tgz_source"
 

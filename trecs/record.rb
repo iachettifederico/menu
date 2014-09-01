@@ -9,7 +9,7 @@ class Record
       !a.include?(": ") && !a.include?("> ")
     }.join("/")
     return "@prompt/Enter file name after the \"record/\" command" if trecs_backend == ""
-    return example if args.join("/") == trecs_backend
+    return example(trecs_backend) if args.join("/") == trecs_backend
    
     strategy = TRecs::ConfigStrategy.new(strategies: strategies, step: 100)
 
@@ -56,8 +56,8 @@ class Record
     strategies
   end
 
-  def self.example
-    <<EOF
+  def self.example(file_name=nil)
+    example = <<EOF
 > First TRecs
 - strategy: incremental
 - message: Welcome to
@@ -68,5 +68,10 @@ class Record
 - step: 1
 - command: echo "Welcome to" <frame>
 EOF
+    if file_name
+      example << "@trecs/play//tmp/hola.trecs/"
+    end
+    
+    example
   end
 end

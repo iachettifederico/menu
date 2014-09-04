@@ -7,3 +7,6 @@
 + dev/
   + @~/code/trecs/
   + @~/tesis/
++ web/
+  http://localhost:9393
+  + @~/code/trecs_web/

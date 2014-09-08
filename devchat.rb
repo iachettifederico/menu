@@ -16,50 +16,49 @@ class Devchat
   end
 
   def self.restart(*args)
-    out = run "rvm 2.1.2 do devchat #{apps(args)} -r", :clean
-    out.each_line.map { |line|
-      app, url = line.split(":", 2)
+    c = "rvm 2.1.2 do devchat #{apps(args)} -r"
+    multiline_out(c, :browser)
+  end
+
+  def self.urls(*args)
+    c = "rvm 2.1.2 do devchat #{apps(args)} -u"
+    multiline_out(c, :browser)
+  end
+  
+  def self.paths(*args)
+    c = "rvm 2.1.2 do devchat #{apps(args)} -p"
+    multiline_out(c)
+  end
+
+  def self.multiline_out(command, browser=nil)
+    out = run command, :clean
+    line_count = out.each_line.count
+    res = out.each_line.map { |line|
+      app, target = line.split(":", 2)
       app = app.strip
-      url = "\n  - @browse/" + url.strip.chomp + "/"
-      "#{app}/#{url}"
+      prefix = browser ? "@browse/" : "@"
+      target = "#{prefix}" + target.strip.chomp + "/"
+      multi  = line_count > 1 ? "#{app}/\n" : ""
+      "#{multi}  - #{target}"
     }
+    line_count == 1 ? res.first : res
+    
   end
 
   def self.bundle(*args)
     run "rvm 2.1.2 do devchat #{apps(args)} -b"
   end
 
-    def self.update_core(*args)
+  def self.update_core(*args)
     run "rvm 2.1.2 do devchat api admin --command='bundle update core_devchat_tv'"
   end
-  
+
   def self.update_auth(*args)
     run "rvm 2.1.2 do devchat devchat admin sponsorships --command='bundle update auth_devchat_tv'"
   end
 
   def self.recreate_database(*args)
     run "rvm 2.1.2 do devchat #{apps(args)} -m"
-  end
-
-  def self.urls(*args)
-    out = run "rvm 2.1.2 do devchat #{apps(args)} -u", :clean
-    out.each_line.map { |line|
-      app, url = line.split(":", 2)
-      app = app.strip
-      url = "\n  - @browse/" + url.strip.chomp + "/"
-      "#{app}:#{url}"
-    }
-  end
-
-  def self.paths(*args)
-    out = run "rvm 2.1.2 do devchat #{apps(args)} -p", :clean
-    out = out.each_line.map { |line|
-      app, path = line.split(":", 2)
-      app = app.strip
-      path = "\n  - @" + path.strip.chomp + "/"
-      "#{app}:#{path}"
-    }
-    ["@" + "#{path}"] + out
   end
 
   def self.trello

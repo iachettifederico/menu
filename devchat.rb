@@ -70,8 +70,12 @@ class Devchat
     $el.browse_url("https://excellence.harvestapp.com/time")
     "@prompt/Opened in browser"
   end
-  private
 
+  def self.env
+    "+ @#{path}.env"
+  end
+  
+  private
   def self.apps(args)
     args.flatten!
     wrong_apps = args.select { |app|

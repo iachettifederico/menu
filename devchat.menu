@@ -9,6 +9,7 @@
 > Info
 - .urls/
 - .paths/
-> External Tools
+- .env/
+> Tools
 - .trello/
 - .harvest/

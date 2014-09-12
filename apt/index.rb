@@ -45,7 +45,7 @@ class Apt
       nil
     else
       state, package, desc = args.last.split(/\s\s+/)
-      if state == "| i"
+      if /\A\| i\w+ .+\Z/ === state
         IO.popen("#{sudo} aptitude remove --purge -y #{package}") do |out|
           out.each_line do |line|
             line.chomp!
@@ -53,7 +53,7 @@ class Apt
           end
         end
         nil
-      elsif state == "| p"
+      elsif /\A\| p\w+ .+\Z/ === state
         IO.popen("#{sudo} aptitude install -y #{package}") do |out|
           out.each_line do |line|
             line.chomp!
@@ -61,7 +61,7 @@ class Apt
           end
         end
         nil
-      elsif state == "| v"
+      elsif /\A\| v\w+ .+\Z/ === state
         return "| Virtual package: #{package}"
       end
     end
